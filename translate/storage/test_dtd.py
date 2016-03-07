@@ -266,6 +266,19 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         print(dtdregen)
         print(dtdsource)
         assert dtdsource == dtdregen
+        dtdsource = '''<!ENTITY certerror.whatShouldIDo.badStsCertExplanation "This site uses HTTP
+Strict Transport Security (HSTS) to specify that &brandShortName; only connect
+to it securely. As a result, it is not possible to add an exception for this
+certificate.">'''
+        dtdregen = self.dtdregen(dtdsource)
+        print(dtdregen)
+        print(dtdsource)
+        assert dtdsource == dtdregen
+        dtdsource = '''<!ENTITY pref.categories.overwrite "A category already exists with that name. \n Do you want to overwrite it?">'''
+        dtdregen = self.dtdregen(dtdsource)
+        print(dtdregen)
+        print(dtdsource)
+        assert dtdsource == dtdregen
 
     def test_conflate_comments(self):
         """Tests that comments don't run onto the same line"""

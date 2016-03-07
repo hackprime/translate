@@ -184,13 +184,13 @@ class TestDTD2PO:
         pounit = self.singleelement(pofile)
         # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
         # drop the line break but this has not been implemented yet.
-        assert pounit.source == "First line then \nnext lines."
+        assert pounit.source == "First line then next lines."
         # No space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
-        assert pounit.source == "First line then \nnext lines."
+        assert pounit.source == "First line then next lines."
 
     def test_accesskeys_folding(self):
         """test that we fold accesskeys into message strings"""
@@ -220,7 +220,7 @@ class TestDTD2PO:
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert unit.source == "First line then \nnext lines."
+        assert unit.source == "First line then next lines."
 
     def test_multiline_with_blankline(self):
         """test that we can process a multiline entity that has a blank line in it, bug 331"""
@@ -232,9 +232,9 @@ Some other text
 ">'''
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert unit.source == "Some text \n \nSome other text"
+        assert unit.source == "Some text Some other text"
 
-    def test_mulitline_closing_quotes(self):
+    def test_multiline_closing_quotes(self):
         """test that we support various styles and spaces after closing quotes on multiline entities"""
         dtdsource = '''
 <!ENTITY pref.plural '<span>opsies</span><span
@@ -242,7 +242,7 @@ Some other text
 '''
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert unit.source == '<span>opsies</span><span \nclass="noWin">preferences</span>'
+        assert unit.source == '<span>opsies</span><span class="noWin">preferences</span>'
 
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
@@ -256,7 +256,7 @@ Some other text
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
         print(repr(unit.source))
-        assert unit.source == " - with a newline \nand more text"
+        assert unit.source == " - with a newline and more text"
 
     def test_escaping_newline_tabs(self):
         """test that we handle all kinds of newline permutations"""

@@ -486,15 +486,25 @@ class dtdunit(base.TranslationUnit):
                         break
 
         # Remove newlines.
-        self.definition = self.definition.replace("\n", "")
+        def _stripe_out_newlines(string):
+            lines = string.replace("\r", "").split("\n")
 
-        # uncomment this line to debug processing
-        if 0:
-            for attr in dir(self):
-                r = repr(getattr(self, attr))
-                if len(r) > 60:
-                    r = r[:57] + "..."
-                self.comments.append(("comment", "self.%s = %s" % (attr, r)))
+            if len(lines) == 1:
+                return string#.strip(" ")
+            result = ""
+            if len(lines[0].strip(" ")):
+                result = lines[0].rstrip(" ")
+            for line in lines[1:-1]:
+                if len(line.strip(" ")):
+                    result = "%s %s" % (result, line.strip(" "))
+
+            if len(lines[-1].strip(" ")):
+                result = "%s %s" % (result, lines[-1].lstrip(" "))
+
+            return result
+
+        self.definition = _stripe_out_newlines(self.definition)
+
         return linesprocessed
 
     def __str__(self):
