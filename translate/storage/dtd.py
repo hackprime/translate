@@ -487,21 +487,16 @@ class dtdunit(base.TranslationUnit):
 
         # Remove newlines.
         def _stripe_out_newlines(string):
-            lines = string.replace("\r", "").split("\n")
+            lines = [line for line in string.replace("\r", "").split("\n")
+                     if line.strip()]
 
             if len(lines) == 1:
-                return string#.strip(" ")
-            result = ""
-            if len(lines[0].strip(" ")):
-                result = lines[0].rstrip(" ")
+                return lines[0]
+
+            result = lines[0].rstrip(" ")
             for line in lines[1:-1]:
-                if len(line.strip(" ")):
-                    result = "%s %s" % (result, line.strip(" "))
-
-            if len(lines[-1].strip(" ")):
-                result = "%s %s" % (result, lines[-1].lstrip(" "))
-
-            return result
+                result = "%s %s" % (result, line.strip(" "))
+            return "%s %s" % (result, lines[-1].lstrip(" "))
 
         self.definition = _stripe_out_newlines(self.definition)
 
