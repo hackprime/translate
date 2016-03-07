@@ -105,6 +105,9 @@ accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
+#TODO convert this to Dialect like for properties.
+
+
 def quoteforandroid(source):
     """Escapes a line for Android DTD files. """
     # Replace "'" character with the \u0027 escape. Other possible replaces are
@@ -482,6 +485,9 @@ class dtdunit(base.TranslationUnit):
                         self.inentity = False
                         break
 
+        # Remove newlines.
+        self.definition = self.definition.replace("\n", "")
+
         # uncomment this line to debug processing
         if 0:
             for attr in dir(self):
@@ -557,6 +563,7 @@ class dtdfile(base.TranslationStore):
                 try:
                     linesprocessed = newdtd.parse((b"\n".join(lines[start:end])).decode(self.encoding))
                     if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
+                        print(newdtd)#TODO testing
                         self.units.append(newdtd)
                 except Exception as e:
                     warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, b"\n".join(lines[start:end])))
