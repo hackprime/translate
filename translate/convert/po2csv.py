@@ -32,6 +32,10 @@ class po2csv(object):
     def convertcomments(self, inputunit):
         return " ".join(inputunit.getlocations())
 
+    def converttranslatorcomments(self, inputunit):
+        return " ".join(comment.lstrip('#. ').rstrip()
+                        for comment in inputunit.automaticcomments)
+
     def convertunit(self, inputunit):
         csvunit = csvl10n.csvunit()
         if inputunit.isheader():
@@ -45,6 +49,7 @@ class po2csv(object):
             csvunit.location = self.convertcomments(inputunit)
             csvunit.source = inputunit.source
             csvunit.target = inputunit.target
+            csvunit.translator_comments = self.converttranslatorcomments(inputunit)
         return csvunit
 
     def convertplurals(self, inputunit):
@@ -60,11 +65,13 @@ class po2csv(object):
         csvunit.location = self.convertcomments(inputunit)
         csvunit.source = inputunit.source.strings[1]
         csvunit.target = inputunit.target.strings[1]
+        csvunit.translator_comments = inputunit.translator_comments.strings[1]
         return csvunit
 
     def convertstore(self, inputstore, columnorder=None):
         if columnorder is None:
             columnorder = ['location', 'source', 'target']
+            columnorder = ['location', 'source', 'target', 'translator_comments']
         outputstore = csvl10n.csvfile(fieldnames=columnorder)
         for inputunit in inputstore.units:
             outputunit = self.convertunit(inputunit)
@@ -93,8 +100,10 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("csv", convertcsv)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    parser.add_option("", "--columnorder", dest="columnorder", default=None,
-        help="specify the order and position of columns (location,source,target)")
+    parser.add_option(
+        "", "--columnorder", dest="columnorder", default=None,
+        help="specify the order and position of columns "
+             "(location,source,target,translator_comments)")
     parser.passthrough.append("columnorder")
     parser.run(argv)
 
